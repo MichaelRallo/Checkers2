@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author dale
+ * @author mike
  */
 public class Checkers extends Application {
     

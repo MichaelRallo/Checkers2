@@ -12,7 +12,7 @@ import javafx.scene.shape.Rectangle;
 
 /**
  *
- * @author dale
+ * @author mike
  */
 public class CheckerBoard {
     
@@ -49,7 +49,7 @@ public class CheckerBoard {
         anchorPane = new AnchorPane();
         anchorPane.setPrefSize(boardWidth, boardHeight);
         
-        //Always Squareeee
+        //Ensure Rects are Always Square
         if(boardHeight > boardWidth){
             rectangleHeight = rectangleWidth;
         }
@@ -57,13 +57,13 @@ public class CheckerBoard {
             rectangleWidth = rectangleHeight;
         }
 
+        //Calculate the Padding Values
         double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
         double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
-        //anchorPane.setPadding(new Insets(verticalPadding, horizontalPadding, verticalPadding, horizontalPadding));
-        System.out.println("Padding is: " + anchorPane.getPadding());      
         
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++){
+                //Position and Size Rectangles
                 Rectangle rectangle = new Rectangle(horizontalPadding + (col * rectangleWidth), verticalPadding + (row * rectangleHeight), rectangleWidth, rectangleHeight);
                 Color color = darkColor;
                 if ((col %2) == (row % 2)) {

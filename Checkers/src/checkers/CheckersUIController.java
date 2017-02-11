@@ -12,7 +12,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -23,7 +22,7 @@ import javafx.stage.Stage;
 /**
  * FXML Controller class
  *
- * @author dale
+ * @author mike
  */
 public class CheckersUIController implements Initializable {
     @FXML
