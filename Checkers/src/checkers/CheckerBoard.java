@@ -94,15 +94,20 @@ public class CheckerBoard {
                 && (tiles[jumpingOverIndex].isEnemy(checkerType) && !jump.getEnemiesDestroyed().contains(jumpingOverIndex))
                 && (tiles[landingIndex].isOpen() || jump.getPath().contains(landingIndex)));    
     }
-    
+    private void checkKings(int index){
+        if(index/numRows == 0 || index/numRows == numRows-1){
+            if(tiles[index].getContent() == PLAYER1CHECKER){
+                tiles[index].setContent(PLAYER1KING);
+            }
+            if(tiles[index].getContent() == PLAYER2CHECKER){
+                tiles[index].setContent(PLAYER2KING);
+            }
+        }
+    }
     public void doMove(int checkerBefore, int checkerAfter){
-        
-        System.out.println("Content Before "+checkerBefore+","+tiles[checkerBefore].getContent());
-        System.out.println("Content After "+checkerAfter+","+tiles[checkerAfter].getContent());
         tiles[checkerAfter].setContent(tiles[checkerBefore].getContent());
         tiles[checkerBefore].setContent(EMPTY);
-        System.out.println("Content Before "+checkerBefore+","+tiles[checkerBefore].getContent());
-        System.out.println("Content After "+checkerAfter+","+tiles[checkerAfter].getContent());
+        checkKings(checkerAfter);
     }
     public void doJump(int checkerBefore, int checkerAfter){
         int checkerBetween;
@@ -119,6 +124,7 @@ public class CheckerBoard {
         tiles[checkerAfter].setContent(tiles[checkerBefore].getContent());
         tiles[checkerBetween].setContent(EMPTY);
         tiles[checkerBefore].setContent(EMPTY);
+        checkKings(checkerAfter);
     }
         
     public ActionsList selectChecker(int checkerIndex){

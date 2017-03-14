@@ -5,16 +5,15 @@
  */
 package checkers;
 
+import static checkers.State.CHECKERACTIVE;
+import static checkers.State.IDLE;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.animation.Interpolator;
-import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.animation.TranslateTransitionBuilder;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -64,14 +63,19 @@ public class CheckersUIController implements Initializable {
         setDefaultColor();
         setDefaultRowsCols();
         checkerBoardStateSpace = new CheckerBoardStateSpace(new CheckerBoard(numRows, numCols));
-        checkerBoardStateSpace.getBoard().placeChecker(26, TileContent.PLAYER1KING);
+//        checkerBoardStateSpace.getBoard().placeChecker(26, TileContent.PLAYER1KING);
+//        checkerBoardStateSpace.getBoard().placeChecker(1, TileContent.PLAYER1KING);
+//        checkerBoardStateSpace.getBoard().placeChecker(19, TileContent.PLAYER2KING);
+//        checkerBoardStateSpace.getBoard().placeChecker(21, TileContent.PLAYER2KING);
+//        checkerBoardStateSpace.getBoard().placeChecker(37, TileContent.PLAYER2KING);
+//        checkerBoardStateSpace.getBoard().placeChecker(35, TileContent.PLAYER2KING);
+
+        checkerBoardStateSpace.getBoard().placeChecker(26, TileContent.PLAYER1CHECKER);
         checkerBoardStateSpace.getBoard().placeChecker(1, TileContent.PLAYER1KING);
-        checkerBoardStateSpace.getBoard().placeChecker(19, TileContent.PLAYER2KING);
-        checkerBoardStateSpace.getBoard().placeChecker(21, TileContent.PLAYER2KING);
+        checkerBoardStateSpace.getBoard().placeChecker(19, TileContent.PLAYER2CHECKER);
+        checkerBoardStateSpace.getBoard().placeChecker(21, TileContent.PLAYER2CHECKER);
         checkerBoardStateSpace.getBoard().placeChecker(37, TileContent.PLAYER2KING);
-        checkerBoardStateSpace.getBoard().placeChecker(35, TileContent.PLAYER2KING);
-                
-                
+        checkerBoardStateSpace.getBoard().placeChecker(35, TileContent.PLAYER2CHECKER);
                 
     }   
     
@@ -87,116 +91,99 @@ public class CheckersUIController implements Initializable {
         scene.widthProperty().addListener(listener);
         scene.heightProperty().addListener(listener);
         
-        
-        
         renderBoard();
     }
-          EventHandler<MouseEvent> circleOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent t) {
-                if(checkerBoardStateSpace.getActiveActions() == null || checkerBoardStateSpace.getActiveActions().getMoves() == null || checkerBoardStateSpace.getActiveActions().getJumps() == null){
-                    System.out.println("ON");
-                    double rectangleHeight = checkerBoard.getRectangleHeight();
-                    double rectangleWidth = checkerBoard.getRectangleWidth();
-                    double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
-                    double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
-                    int tileIndex = ((int)((t.getX()-horizontalPadding)/rectangleWidth) + (int)((t.getY()-verticalPadding)/rectangleHeight) * numRows);
-                    
-                    //System.out.println("Index: " + tileIndex);
-                    checkerBoardStateSpace.setActiveActions(checkerBoardStateSpace.getBoard().getValidMoves(tileIndex), 
-                            checkerBoardStateSpace.getBoard().getValidJumps(tileIndex, checkerBoardStateSpace.getBoard().getTiles()[tileIndex].getContent(),  new JumpType(tileIndex)));
-                    checkerBoardStateSpace.setActiveChecker(tileIndex);
+    
+    EventHandler<MouseEvent> circleOnMousePressedEventHandler = new EventHandler<MouseEvent>(){
+        @Override
+        public void handle(MouseEvent t) {
+            if(checkerBoardStateSpace.getState() == IDLE || checkerBoardStateSpace.getState() == CHECKERACTIVE){
+                
+                //If Checker Already Selected, Deselect it!
+                int tileIndex = checkerBoard.getCircleIndex((Circle)t.getSource());
+                if(tileIndex == checkerBoardStateSpace.getActiveChecker() && checkerBoardStateSpace.getActiveActions() != null){
+                    checkerBoardStateSpace.clearActiveActions();
+                    checkerBoardStateSpace.setState(IDLE);
                     renderBoard();
+                    return;
                 }
-                else{
-                    System.out.println("OFF");
-                    checkerBoardStateSpace.setActiveActions(null, null);
-                    renderBoard();
-                }
+                checkerBoardStateSpace.setActiveActions(checkerBoardStateSpace.getBoard().getValidMoves(tileIndex), 
+                    checkerBoardStateSpace.getBoard().getValidJumps(tileIndex, checkerBoardStateSpace.getBoard().getTiles()[tileIndex].getContent(),  new JumpType(tileIndex)));
+                checkerBoardStateSpace.setActiveChecker(tileIndex);
+                checkerBoardStateSpace.setState(CHECKERACTIVE);
+                renderBoard();
             }
-        };
+        }
+    };
           
           EventHandler<MouseEvent> tileOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent t) {
-                double rectangleHeight = checkerBoard.getRectangleHeight();
-                double rectangleWidth = checkerBoard.getRectangleWidth();
-                double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
-                double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
                 
-                int tileIndex = ((int)((t.getX()-horizontalPadding)/rectangleWidth) + (int)((t.getY()-verticalPadding)/rectangleHeight) * numRows);
-                
-                
-                System.out.println("Square Index: " + tileIndex);
+                int tileIndex = checkerBoard.getRectangleIndex((Rectangle)t.getSource());
+                if(checkerBoardStateSpace.getState() == CHECKERACTIVE){
+                    
+                    for(int i = 0; i < checkerBoardStateSpace.getActiveActions().getMoves().size(); i++){
+                        if(checkerBoardStateSpace.getActiveActions().getMoves().get(i) == tileIndex){
 
-                if(checkerBoardStateSpace.getActiveActions() == null || checkerBoardStateSpace.getActiveActions().getMoves() == null || checkerBoardStateSpace.getActiveActions().getJumps() == null){
-                    System.out.println("Turn me on First!");
-                    
-                }
-                else{
-                    System.out.println("Lists Moves: " + checkerBoardStateSpace.getActiveActions().getMoves() + "Jumps: " + checkerBoardStateSpace.getActiveActions().getJumps());
-                    
-                        for(int i = 0; i < checkerBoardStateSpace.getActiveActions().getMoves().size(); i++){
-                            if(checkerBoardStateSpace.getActiveActions().getMoves().get(i) == tileIndex){
-                                
-                                checkerBoardStateSpace.getBoard().doMove(checkerBoardStateSpace.getActiveChecker(), tileIndex);
-                                checkerBoardStateSpace.setActiveActions(null, null);
-                                
-                                checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex);
-                                
-                                System.out.println("Animating...");
-                                TranslateTransition translate;
-                                translate = TranslateTransitionBuilder
-                               .create()
-                               .duration(new Duration(1000))
-                               .node(checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
-                               .toX(checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
-                               .toY(checkerBoard.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
-                               .autoReverse(false)
-                               .cycleCount(1)
-                               .interpolator(Interpolator.EASE_BOTH)
-                               .build();
-                               translate.setOnFinished((final ActionEvent arg0) -> {
-                                   renderBoard();
-                                });
-                                translate.play();
-                                
-                                
-                                return;
-                            }
+                            checkerBoardStateSpace.getBoard().doMove(checkerBoardStateSpace.getActiveChecker(), tileIndex);
+                            checkerBoardStateSpace.clearActiveActions();
+
+                            checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex);
+
+                            System.out.println("Animating...");
+                            TranslateTransition translate;
+                            translate = TranslateTransitionBuilder
+                           .create()
+                           .duration(new Duration(500))
+                           .node(checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
+                           .toX(checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+                           .toY(checkerBoard.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+                           .autoReverse(false)
+                           .cycleCount(1)
+                           .interpolator(Interpolator.EASE_BOTH)
+                           .build();
+                           translate.setOnFinished((final ActionEvent arg0) -> {
+                               renderBoard();
+                            });
+                            translate.play();
+                            checkerBoardStateSpace.setState(IDLE);
+                            return;
                         }
+                    }
                     
-                       
-                        for(int i = 0; i < checkerBoardStateSpace.getActiveActions().getJumps().size(); i++)
-                        {
-                            if(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().get(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().size()-2) == tileIndex){
-                               checkerBoardStateSpace.getBoard().doJump(checkerBoardStateSpace.getActiveChecker(), tileIndex);
-                                checkerBoardStateSpace.setActiveActions(null, null);
-                                System.out.println("Animating...");
-                                TranslateTransition translate;
-                                translate = TranslateTransitionBuilder
-                               .create()
-                               .duration(new Duration(1000))
-                               .node(checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
-                               .toX(checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
-                               .toY(checkerBoard.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
-                               .autoReverse(false)
-                               .cycleCount(1)
-                               .interpolator(Interpolator.EASE_BOTH)
-                               .build();
-                               translate.setOnFinished((final ActionEvent arg0) -> {
-                                   renderBoard();
-                                });
-                                translate.play();
-                                
-                                
-                                return;
-                            }
+
+                    for(int i = 0; i < checkerBoardStateSpace.getActiveActions().getJumps().size(); i++)
+                    {
+                        if(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().get(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().size()-2) == tileIndex){
+                           checkerBoardStateSpace.getBoard().doJump(checkerBoardStateSpace.getActiveChecker(), tileIndex);
+                            checkerBoardStateSpace.clearActiveActions();
+                            System.out.println("Animating...");
+                            TranslateTransition translate;
+                            translate = TranslateTransitionBuilder
+                           .create()
+                           .duration(new Duration(1000))
+                           .node(checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
+                           .toX(checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+                           .toY(checkerBoard.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+                           .autoReverse(false)
+                           .cycleCount(1)
+                           .interpolator(Interpolator.EASE_BOTH)
+                           .build();
+                           translate.setOnFinished((final ActionEvent arg0) -> {
+                               renderBoard();
+                            });
+                            translate.play();
+                            checkerBoardStateSpace.setState(IDLE);
+                            return;
                         }
+                    }
                     
-                    //renderBoard();
+                    //Otherwise did not find a valid tile to move to...
+                    checkerBoardStateSpace.setState(IDLE);
+                    checkerBoardStateSpace.clearActiveActions();
+                    renderBoard();
                 }
             }
         };

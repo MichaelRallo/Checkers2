@@ -5,10 +5,6 @@
  */
 package checkers;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -24,7 +20,7 @@ import javafx.scene.shape.Rectangle;
  */
 public class CheckerBoardUI {
     double orgSceneX, orgSceneY;
-                    double orgTranslateX, orgTranslateY;
+    double orgTranslateX, orgTranslateY;
     private int numRows;
     private int numCols;
     private double boardWidth;
@@ -37,52 +33,9 @@ public class CheckerBoardUI {
     private Color player2Color = Color.GOLD;
     private AnchorPane anchorPane;
     private CheckerBoard board;
-    private ActionsList possibles;
-    
-//                EventHandler<MouseEvent> circleOnMousePressedEventHandler = new EventHandler<MouseEvent>() {
-//
-//                    @Override
-//                    public void handle(MouseEvent t) {
-//                        
-//                        double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
-//                        double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
-//                        int tileIndex = ((int)((t.getX()-horizontalPadding)/rectangleWidth) + (int)((t.getY()-verticalPadding)/rectangleHeight) * numRows);
-//                        
-//                        System.out.println("Index: " + tileIndex);
-//
-//                        possibles = board.getValidMoves(tileIndex);
-//                        build();
-//                    
-//                        orgSceneX = t.getSceneX();
-//                        orgSceneY = t.getSceneY();
-//                        orgTranslateX = ((Circle)(t.getSource())).getTranslateX();
-//                        orgTranslateY = ((Circle)(t.getSource())).getTranslateY();
-//                    }
-//                };
-
-//                EventHandler<MouseEvent> circleOnMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
-//
-//                    @Override
-//                    public void handle(MouseEvent t) {
-//                        double offsetX = t.getSceneX() - orgSceneX;
-//                        double offsetY = t.getSceneY() - orgSceneY;
-//                        double newTranslateX = orgTranslateX + offsetX;
-//                        double newTranslateY = orgTranslateY + offsetY;
-//                        
-//                        double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
-//                        double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
-//                        int tileIndexBefore = ((int)((t.getX()-horizontalPadding)/rectangleWidth) + (int)((t.getY()-verticalPadding)/rectangleHeight) * numRows);
-//                        int tileIndexAfter = ((int)((t.getSceneX()-horizontalPadding)/rectangleWidth) + (int)((t.getSceneY()-verticalPadding)/rectangleHeight) * numRows);
-//                        
-//                        System.out.println("Before: " + tileIndexBefore + " | After: " + tileIndexAfter);
-//                         System.out.println("X: " + t.getX() + " Y: " + t.getY() + "X: " + t.getSceneX() + " Y: " + t.getSceneY());    
-//                            ((Circle)(t.getSource())).setTranslateX(newTranslateX);
-//                            ((Circle)(t.getSource())).setTranslateY(newTranslateY);
-//                        
-//                    }
-//                };
-               
-    
+    private ActionsList possibles;       
+    double verticalPadding;
+    double horizontalPadding;
     
     public Circle getCheckerCircleByIndex(StackPane stackPane, int index){
         Node nodeOut = stackPane.getChildren().get(0);
@@ -96,15 +49,6 @@ public class CheckerBoardUI {
             }
         } 
         return null;
-    }
-    
-    public int getCircleIndex(Circle circle){
-        
-        double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
-        double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
-        
-        int index = ((int)((circle.getCenterX()-horizontalPadding)/rectangleWidth) + (int)((circle.getCenterY()-verticalPadding)/rectangleHeight) * numRows);
-        return index;
     }
     
     public Rectangle getRectangleByIndex(StackPane stackPane, int index){
@@ -121,12 +65,14 @@ public class CheckerBoardUI {
         return null;
     }
     
+    public int getCircleIndex(Circle circle){
+        int index = ((int)((circle.getCenterX()-horizontalPadding)/rectangleWidth) + (int)((circle.getCenterY()-verticalPadding)/rectangleHeight) * numRows);
+        return index;
+    }
+    
     public int getRectangleIndex(Rectangle rect){
-        double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
-        double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
         int tileIndex = ((int)((rect.getX()-horizontalPadding)/rectangleWidth) + (int)((rect.getY()-verticalPadding)/rectangleHeight) * numRows);
         return tileIndex;
-
     }
     
     public double getTransX(StackPane stackPane, int startingTile, int endingTile){
@@ -134,11 +80,6 @@ public class CheckerBoardUI {
     }
     public double getTransY(StackPane stackPane, int startingTile, int endingTile){
         return getRectangleByIndex(stackPane, endingTile).getY() - getRectangleByIndex(stackPane, startingTile).getY();
-    }
-    
-    
-    public void setPossibilities(ActionsList possibles){
-        this.possibles = possibles;
     }
     
     public CheckerBoardUI(CheckerBoardStateSpace checkerBoardStateSpace, double boardWidth, double boardHeight) {
@@ -149,8 +90,8 @@ public class CheckerBoardUI {
        this.boardWidth = boardWidth;
        this.boardHeight = boardHeight;
        this.possibles = checkerBoardStateSpace.getActiveActions();
-       rectangleWidth = boardWidth / numCols;
-       rectangleHeight = boardHeight / numRows;
+       this.rectangleWidth = boardWidth / numCols;
+       this.rectangleHeight = boardHeight / numRows;
     }
     
     public CheckerBoardUI(CheckerBoardStateSpace checkerBoardStateSpace, double boardWidth, double boardHeight, Color lightColor, Color darkColor) {
@@ -159,8 +100,7 @@ public class CheckerBoardUI {
        this.darkColor = darkColor;
     }
     
-    // https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/AnchorPane.html#AnchorPane--
-    // https://docs.oracle.com/javase/8/javafx/api/javafx/scene/shape/Rectangle.html#Rectangle--
+    
     
     public AnchorPane build() {
         anchorPane = new AnchorPane();
@@ -175,11 +115,10 @@ public class CheckerBoardUI {
         }
 
         //Calculate the Padding Values
-        double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
-        double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
-        
-        
-        
+        System.out.println("HB:" + horizontalPadding);
+         verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
+         horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
+         System.out.println("HA:" + horizontalPadding);
         //Tiles
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++){
@@ -221,8 +160,6 @@ public class CheckerBoardUI {
                 Circle circle = new Circle(horizontalPadding + (col * rectangleWidth) + rectangleWidth/2, verticalPadding + (row * rectangleHeight) + rectangleHeight/2, rectangleWidth/3);
 
                 circle.setCursor(Cursor.HAND);
-                //circle.setOnMousePressed(circleOnMousePressedEventHandler);
-                //circle.setOnMouseDragged(circleOnMouseDraggedEventHandler);
                 CheckerPiece checkerPiece = new CheckerPiece(circle, col+(row*numCols));
                 
 
@@ -247,8 +184,6 @@ public class CheckerBoardUI {
             }
         }        
         
-        
-
         return anchorPane;
     }
     
@@ -290,20 +225,3 @@ public class CheckerBoardUI {
     }
     
 }
-//                checkerPiece.getCheckerPiece().setOnMouseClicked((MouseEvent t) -> {
-//                    System.out.println("Checker Index: " + checkerPiece.getIndex());
-//                    
-//                    ArrayList<Integer> validMoves = board.getValidMoves(checkerPiece.getIndex());
-//                    ArrayList<JumpType> validJumps = board.getValidJumps(checkerPiece.getIndex(), board.getTiles()[checkerPiece.getIndex()].getContent(), new JumpType(checkerPiece.getIndex()));
-//
-//                    
-//                    
-//                    for(int i = 0; i < validMoves.size(); i++){
-//                        System.out.print(validMoves.get(i) + " ");
-//                    }
-//                    for(int i = 0; i < validJumps.size(); i++){
-//                        Collections.reverse(validJumps.get(i).getPath());
-//                        System.out.print(validJumps.get(i).getPath().get(validJumps.get(i).getPath().size()-2) + " ");
-//                    }
-//                    
-//                });

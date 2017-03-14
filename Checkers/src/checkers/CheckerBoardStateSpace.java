@@ -5,6 +5,7 @@
  */
 package checkers;
 
+import static checkers.State.IDLE;
 import java.util.ArrayList;
 
 /**
@@ -21,17 +22,16 @@ public class CheckerBoardStateSpace {
     double orgSceneY;
     double orgTranslateX;
     double orgTranslateY;
-    public double getOrgSceneX(){return this.orgSceneX;}
-    public double getOrgSceneY(){return this.orgSceneY;}
-    public double getOrgTranslateX(){return this.orgTranslateX;}
-    public double getOrgTranslateY(){return this.orgTranslateY;}
-    public void setOrgSceneX(double value){this.orgSceneX = value;}
-    public void setOrgSceneY(double value){this.orgSceneY= value;}
-    public void setOrgTranslateX(double value){this.orgTranslateX= value;}
-    public void setOrgTranslateY(double value){this.orgTranslateY= value;}
+    State state;
+    
+    public State getState(){
+        return this.state;
+    }
+    public void setState(State state){this.state = state;}
     
     public CheckerBoardStateSpace(CheckerBoard board){
         this.board = board;
+        this.state = IDLE;
     }
     
     public void generateChildren(){
@@ -54,6 +54,9 @@ public class CheckerBoardStateSpace {
     public int getActiveChecker(){return this.activeChecker;}
     public void setActiveActions(ArrayList<Integer> activeMoves, ArrayList<JumpType> activeJumps){
         this.activeActions = new ActionsList(activeMoves, activeJumps);
+    }
+    public void clearActiveActions(){
+        this.activeActions = null;
     }
     
     
