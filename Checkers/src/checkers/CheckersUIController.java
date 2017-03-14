@@ -8,6 +8,10 @@ package checkers;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.animation.Interpolator;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
+import javafx.animation.TranslateTransitionBuilder;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -26,6 +30,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * FXML Controller class
@@ -97,8 +102,8 @@ public class CheckersUIController implements Initializable {
                     double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
                     double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
                     int tileIndex = ((int)((t.getX()-horizontalPadding)/rectangleWidth) + (int)((t.getY()-verticalPadding)/rectangleHeight) * numRows);
-
-                    System.out.println("Index: " + tileIndex);
+                    
+                    //System.out.println("Index: " + tileIndex);
                     checkerBoardStateSpace.setActiveActions(checkerBoardStateSpace.getBoard().getValidMoves(tileIndex), 
                             checkerBoardStateSpace.getBoard().getValidJumps(tileIndex, checkerBoardStateSpace.getBoard().getTiles()[tileIndex].getContent(),  new JumpType(tileIndex)));
                     checkerBoardStateSpace.setActiveChecker(tileIndex);
@@ -138,6 +143,23 @@ public class CheckersUIController implements Initializable {
                                 
                                 checkerBoardStateSpace.getBoard().doMove(checkerBoardStateSpace.getActiveChecker(), tileIndex);
                                 checkerBoardStateSpace.setActiveActions(null, null);
+                                
+                                System.out.println("Animating...");
+                                TranslateTransition translate;
+                                translate = TranslateTransitionBuilder
+                               .create()
+                               .duration(new Duration(5 * 1000))
+                               .node(checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
+                               //.toX((((Rectangle)t.getSource()).getX()))
+                               .toX(400)
+                               .autoReverse(true)
+                               .cycleCount(Timeline.INDEFINITE)
+                               .interpolator(Interpolator.EASE_BOTH)
+                               .build()
+                               .onFinishedProperty();
+//http://www.programcreek.com/java-api-examples/index.php?api=javafx.animation.TranslateTransitionBuilder
+                                translate.play();
+                                
                                 renderBoard();
                                 return;
                             }
@@ -149,12 +171,12 @@ public class CheckersUIController implements Initializable {
                             if(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().get(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().size()-2) == tileIndex){
                                checkerBoardStateSpace.getBoard().doJump(checkerBoardStateSpace.getActiveChecker(), tileIndex);
                                 checkerBoardStateSpace.setActiveActions(null, null);
-                                renderBoard();
+                                //renderBoard();
                                 return;
                             }
                         }
                     
-                    renderBoard();
+                    //renderBoard();
                 }
             }
         };

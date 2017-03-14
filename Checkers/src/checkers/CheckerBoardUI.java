@@ -10,8 +10,10 @@ import java.util.Collections;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -79,7 +81,33 @@ public class CheckerBoardUI {
 //                        
 //                    }
 //                };
-                
+               
+    
+    
+    public Circle getCheckerCircleByIndex(StackPane stackPane, int index){
+        Node nodeOut = stackPane.getChildren().get(0);
+        if(nodeOut instanceof AnchorPane){
+            for(Node nodeIn:((AnchorPane)nodeOut).getChildren()){
+                if(nodeIn instanceof Circle){
+                    if(getCircleIndex((Circle)nodeIn) == index){
+                        return (Circle)nodeIn;
+                    }
+                }
+            }
+        } 
+        return null;
+    }
+    
+    public int getCircleIndex(Circle circle){
+        
+        double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
+        double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
+        
+        int index = ((int)((circle.getCenterX()-horizontalPadding)/rectangleWidth) + (int)((circle.getCenterY()-verticalPadding)/rectangleHeight) * numRows);
+        return index;
+    }
+    
+    
     public void setPossibilities(ActionsList possibles){
         this.possibles = possibles;
     }
