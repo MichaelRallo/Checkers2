@@ -126,7 +126,7 @@ public class CheckersUIController implements Initializable {
                 double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
                 double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
                 
-                    int tileIndex = ((int)((t.getX()-horizontalPadding)/rectangleWidth) + (int)((t.getY()-verticalPadding)/rectangleHeight) * numRows);
+                int tileIndex = ((int)((t.getX()-horizontalPadding)/rectangleWidth) + (int)((t.getY()-verticalPadding)/rectangleHeight) * numRows);
                 
                 
                 System.out.println("Square Index: " + tileIndex);
@@ -144,23 +144,26 @@ public class CheckersUIController implements Initializable {
                                 checkerBoardStateSpace.getBoard().doMove(checkerBoardStateSpace.getActiveChecker(), tileIndex);
                                 checkerBoardStateSpace.setActiveActions(null, null);
                                 
+                                checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex);
+                                
                                 System.out.println("Animating...");
                                 TranslateTransition translate;
                                 translate = TranslateTransitionBuilder
                                .create()
-                               .duration(new Duration(5 * 1000))
+                               .duration(new Duration(1000))
                                .node(checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
-                               //.toX((((Rectangle)t.getSource()).getX()))
-                               .toX(400)
-                               .autoReverse(true)
-                               .cycleCount(Timeline.INDEFINITE)
+                               .toX(checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+                               .toY(checkerBoard.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+                               .autoReverse(false)
+                               .cycleCount(1)
                                .interpolator(Interpolator.EASE_BOTH)
-                               .build()
-                               .onFinishedProperty();
-//http://www.programcreek.com/java-api-examples/index.php?api=javafx.animation.TranslateTransitionBuilder
+                               .build();
+                               translate.setOnFinished((final ActionEvent arg0) -> {
+                                   renderBoard();
+                                });
                                 translate.play();
                                 
-                                renderBoard();
+                                
                                 return;
                             }
                         }
@@ -171,7 +174,24 @@ public class CheckersUIController implements Initializable {
                             if(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().get(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().size()-2) == tileIndex){
                                checkerBoardStateSpace.getBoard().doJump(checkerBoardStateSpace.getActiveChecker(), tileIndex);
                                 checkerBoardStateSpace.setActiveActions(null, null);
-                                //renderBoard();
+                                System.out.println("Animating...");
+                                TranslateTransition translate;
+                                translate = TranslateTransitionBuilder
+                               .create()
+                               .duration(new Duration(1000))
+                               .node(checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
+                               .toX(checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+                               .toY(checkerBoard.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+                               .autoReverse(false)
+                               .cycleCount(1)
+                               .interpolator(Interpolator.EASE_BOTH)
+                               .build();
+                               translate.setOnFinished((final ActionEvent arg0) -> {
+                                   renderBoard();
+                                });
+                                translate.play();
+                                
+                                
                                 return;
                             }
                         }

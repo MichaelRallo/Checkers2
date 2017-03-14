@@ -107,6 +107,35 @@ public class CheckerBoardUI {
         return index;
     }
     
+    public Rectangle getRectangleByIndex(StackPane stackPane, int index){
+        Node nodeOut = stackPane.getChildren().get(0);
+        if(nodeOut instanceof AnchorPane){
+            for(Node nodeIn:((AnchorPane)nodeOut).getChildren()){
+                if(nodeIn instanceof Rectangle){
+                    if(getRectangleIndex((Rectangle)nodeIn) == index){
+                        return (Rectangle)nodeIn;
+                    }
+                }
+            }
+        } 
+        return null;
+    }
+    
+    public int getRectangleIndex(Rectangle rect){
+        double verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
+        double horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
+        int tileIndex = ((int)((rect.getX()-horizontalPadding)/rectangleWidth) + (int)((rect.getY()-verticalPadding)/rectangleHeight) * numRows);
+        return tileIndex;
+
+    }
+    
+    public double getTransX(StackPane stackPane, int startingTile, int endingTile){
+        return getRectangleByIndex(stackPane, endingTile).getX() - getRectangleByIndex(stackPane, startingTile).getX();
+    }
+    public double getTransY(StackPane stackPane, int startingTile, int endingTile){
+        return getRectangleByIndex(stackPane, endingTile).getY() - getRectangleByIndex(stackPane, startingTile).getY();
+    }
+    
     
     public void setPossibilities(ActionsList possibles){
         this.possibles = possibles;
