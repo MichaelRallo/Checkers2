@@ -128,10 +128,10 @@ public class CheckerBoardUI {
                 //Position and Size Rectangles
                 Rectangle rectangle = new Rectangle(horizontalPadding + (col * rectangleWidth), verticalPadding + (row * rectangleHeight), rectangleWidth, rectangleHeight);
                 Color color = darkColor;
-        
+                rectangle.getStyleClass().add("blackTile");
                 
                 if ((col %2) == (row % 2)) {
-                    color = lightColor;
+                    rectangle.getStyleClass().add("redTile");
                 }
                 
                 int tileIndex = col+(row*numCols);
@@ -150,7 +150,7 @@ public class CheckerBoardUI {
                         }
                     }
                 }
-                rectangle.setFill(color);
+                //rectangle.setFill(color);
                 anchorPane.getChildren().add(rectangle);
 
             }

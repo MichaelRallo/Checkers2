@@ -8,7 +8,18 @@
     
 #stackPane{
     -fx-background-color: #424242;
-    /*-fx-background-image: url("http://www.colorcombos.com/images/colors/FF0000.png");*/
+    
+    -fx-background-image: url("paneBG.png");
+    -fx-background-repeat: repeat;   
+}
+
+.blackTile{
+    -fx-fill: url("tileBlack.png");
+    
+}
+.redTile{
+    -fx-fill: url("tileRed.png");
+    
 }
 
 .player1Checker{
