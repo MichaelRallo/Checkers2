@@ -30,6 +30,6 @@
           </Menu>
         </menus>
       </MenuBar>
-      <StackPane fx:id="stackPane" prefHeight="150.0" prefWidth="200.0" />
+      <StackPane fx:id="stackPane" prefHeight="150.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>

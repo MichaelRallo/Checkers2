@@ -22,6 +22,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
@@ -179,6 +180,8 @@ checkerBoardStateSpace.getBoard().populateDefault();
                            checkerBoardStateSpace.getActiveActions().getJumps().remove(i);
                             checkerBoardStateSpace.getBoard().doJump(checkerBoardStateSpace.getActiveChecker(), tileIndex);
                             System.out.println("Animating...");
+                            
+                            checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()).toFront();
                             TranslateTransition translate;
                             translate = TranslateTransitionBuilder
                            .create()
@@ -230,6 +233,9 @@ checkerBoardStateSpace.getBoard().populateDefault();
         boardHeight = scene.getHeight() - menuBar.getHeight();
         
         stackPane.getChildren().clear();
+//        Button button2 = new Button("Accept");
+//        stackPane.getChildren().add(button2);
+        
         checkerBoard = new CheckerBoardUI(checkerBoardStateSpace, boardWidth, boardHeight, lightColor, darkColor);
         stackPane.getChildren().add(checkerBoard.build());
         

@@ -183,6 +183,7 @@ public class CheckerBoardUI {
                 if(circle.getStyleClass() != null && !circle.getStyleClass().isEmpty()){
                     //circle.setFill(new ImagePattern(new Image("king.png"), 0, 0, 1, 1, true));
                     anchorPane.getChildren().add(circle);
+                    //circle.toBack();
                 }
             }
         }        
