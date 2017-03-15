@@ -5,3 +5,33 @@
 .mainFxmlClass {
 
 }
+    
+#stackPane{
+    -fx-background-color: gray;
+    /*-fx-background-image: url("http://www.colorcombos.com/images/colors/FF0000.png");*/
+}
+
+.player1Checker{
+    -fx-fill: url("player1Checker.png");
+}
+.player2Checker{
+    -fx-fill: url("player2Checker.png");
+}
+.player1King{
+    -fx-fill: url("player1King.png");
+}
+.player2King{
+    -fx-fill: url("player2King.png");
+}
+.player1Checker:hover, .player2Checker:hover, .player1King:hover, player2King:hover{
+    -fx-cursor: hand;
+}
+/*.king2Checker{
+
+    -fx-stoke: black;
+    -fx-stroke-width: 2;    
+    -fx-background-image: url("http://www.colorcombos.com/images/colors/FF0000.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-opacity: 0.5;
+}*/

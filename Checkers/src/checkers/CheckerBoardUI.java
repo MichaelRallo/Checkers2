@@ -7,12 +7,15 @@ package checkers;
 
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 
 /**
  *
@@ -125,12 +128,7 @@ public class CheckerBoardUI {
                 //Position and Size Rectangles
                 Rectangle rectangle = new Rectangle(horizontalPadding + (col * rectangleWidth), verticalPadding + (row * rectangleHeight), rectangleWidth, rectangleHeight);
                 Color color = darkColor;
-                
-                
-                
-                rectangle.setOnMouseClicked((MouseEvent t) -> {
-                    System.out.println("Index: " + ((rectangle.getX()-horizontalPadding) / (this.rectangleWidth)+((rectangle.getY()-verticalPadding) / (this.rectangleHeight))*numRows));
-                });
+        
                 
                 if ((col %2) == (row % 2)) {
                     color = lightColor;
@@ -139,12 +137,16 @@ public class CheckerBoardUI {
                 int tileIndex = col+(row*numCols);
                 if(possibles !=null && possibles.getMoves() !=null && possibles.getJumps() != null){
                     if(possibles.getMoves().contains(tileIndex)){
-                        color = Color.GOLD;
+                        rectangle.setStroke(Color.GOLD);
+                        rectangle.setStrokeWidth(5);
+                        rectangle.setStrokeType(StrokeType.INSIDE);
                     }
                     for(int i = 0; i < possibles.getJumps().size(); i++)
                     {
                         if(possibles.getJumps().get(i).getPath().get(possibles.getJumps().get(i).getPath().size()-2) == tileIndex){
-                           color = Color.GOLD; 
+                        rectangle.setStroke(Color.GOLD);
+                        rectangle.setStrokeWidth(5);
+                        rectangle.setStrokeType(StrokeType.INSIDE);
                         }
                     }
                 }
@@ -165,20 +167,21 @@ public class CheckerBoardUI {
 
                 switch(this.board.getTiles()[col+(row*numCols)].getContent()){
                     case PLAYER1CHECKER:
-                        circle.setFill(player1Color);
+                        circle.getStyleClass().add("player1Checker");
                         break;
                     case PLAYER2CHECKER:
-                        circle.setFill(player2Color);
+                        circle.getStyleClass().add("player2Checker");
                         break;
                     case PLAYER1KING: 
-                        circle.setFill(player1Color);
+                        circle.getStyleClass().add("player1King");
                         break;
                     case PLAYER2KING:
-                        circle.setFill(player2Color);
+                        circle.getStyleClass().add("player2King");
                         break;
                     default:circle.setFill(null);break;
                 }
-                if(circle.getFill() != null){
+                if(circle.getStyleClass() != null && !circle.getStyleClass().isEmpty()){
+                    //circle.setFill(new ImagePattern(new Image("king.png"), 0, 0, 1, 1, true));
                     anchorPane.getChildren().add(circle);
                 }
             }

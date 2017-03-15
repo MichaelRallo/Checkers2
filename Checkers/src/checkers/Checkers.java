@@ -24,7 +24,6 @@ public class Checkers extends Application {
         CheckersUIController controller = loader.getController();
         
         Scene scene = new Scene(root);
-        
         stage.setScene(scene);
         stage.show();
         

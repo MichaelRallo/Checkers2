@@ -23,10 +23,19 @@ public class CheckerBoardStateSpace {
     double orgTranslateX;
     double orgTranslateY;
     State state;
+    public int playerTurn = 1;
+    
     
     public State getState(){
         return this.state;
     }
+    
+    public int getPlayerTurn(){return this.playerTurn;}
+    public void togglePlayerTurn(){
+        if(this.playerTurn == 1){playerTurn = 2;}
+        else{playerTurn = 1;}
+    }
+        
     public void setState(State state){this.state = state;}
     
     public CheckerBoardStateSpace(CheckerBoard board){
