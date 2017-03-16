@@ -26,7 +26,9 @@ public class Checkers extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-        
+        stage.setTitle("Checkers");
+        stage.setMinWidth(450);
+        stage.setMinHeight(450);
         controller.ready(stage, scene);
     }
 

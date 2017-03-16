@@ -20,14 +20,18 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -60,6 +64,20 @@ public class CheckersUIController implements Initializable {
     
     private CheckerBoardUI checkerBoard;
     private CheckerBoardStateSpace checkerBoardStateSpace;
+    @FXML
+    private VBox vBox;
+    @FXML
+    private AnchorPane playerTopPane;
+    @FXML
+    private AnchorPane playerBottomPane;
+    @FXML
+    private Label playerTopLabel;
+    @FXML
+    private Button playerTopButton;
+    @FXML
+    private Label playerBottomLabel;
+    @FXML
+    private Button playerBottomButton;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -92,9 +110,12 @@ checkerBoardStateSpace.getBoard().populateDefault();
             renderBoard();
         };
         
+        vBox.getStyleClass().add("mainPane");
+        playerTopLabel.getStyleClass().add("playerLabels");
+        playerBottomLabel.getStyleClass().add("playerLabels");
+        
         scene.widthProperty().addListener(listener);
         scene.heightProperty().addListener(listener);
-        stackPane.setId("stackPane");
         renderBoard();
     }
     
@@ -203,25 +224,14 @@ checkerBoardStateSpace.getBoard().populateDefault();
                                    checkerBoardStateSpace.setState(IDLE);
                                    checkerBoardStateSpace.togglePlayerTurn();
                                }
-//                                while(checkerBoardStateSpace.getState() == JUMPING){
-//                                    checkerBoardStateSpace.getActiveActions().getJumps().remove(i);
-//                                    
-//                                }
-                               //checkerBoardStateSpace.clearActiveActions();
                                renderBoard();
                             });
                             translate.play();
                             
-                            
-//                            Event.fireEvent(((Circle)(t.getSource())), E);
                             return;
                         }
                     }
                     
-                    
-                    //Otherwise did not find a valid tile to move to...
-//                    checkerBoardStateSpace.setState(IDLE);
-//                    checkerBoardStateSpace.clearActiveActions();
                     renderBoard();
                 }
             }
@@ -230,14 +240,48 @@ checkerBoardStateSpace.getBoard().populateDefault();
           
     private void renderBoard() {
         boardWidth = scene.getWidth();
-        boardHeight = scene.getHeight() - menuBar.getHeight();
+        boardHeight = scene.getHeight() - menuBar.getHeight() - playerTopPane.getHeight()- playerBottomPane.getHeight();
         
+        if(checkerBoardStateSpace.getPlayerTurn() == 1){
+            if(checkerBoardStateSpace.getBoard().hasWinner()){
+                playerBottomLabel.setText("Player 1 - Loser!");
+                playerTopLabel.setText("Player 2 - Winner!");
+                return;
+            }
+            playerBottomLabel.setText("Player 1 - Your Move!");
+            playerTopLabel.setText("Player 2");
+        }
+        else{
+            if(checkerBoardStateSpace.getBoard().hasWinner()){
+                playerBottomLabel.setText("Player 1 - Winner!");
+                playerTopLabel.setText("Player 2 - Loser!");
+                return;
+            }
+            playerTopLabel.setText("Player 2 - Your Move!");
+            playerBottomLabel.setText("Player 1");
+        }
+        
+        if(boardHeight > boardWidth/2){
+            AnchorPane.setRightAnchor(playerTopButton, 10.0);
+            AnchorPane.setLeftAnchor(playerTopLabel, 10.0);
+            playerTopLabel.setAlignment(Pos.CENTER_LEFT);
+            AnchorPane.setRightAnchor(playerBottomButton, 10.0);
+            AnchorPane.setLeftAnchor(playerBottomLabel, 10.0);
+            playerBottomLabel.setAlignment(Pos.CENTER_LEFT);
+        }
+        else{
+            AnchorPane.setRightAnchor(playerTopButton, 30.0);
+            AnchorPane.setLeftAnchor(playerTopLabel, 0.0);
+            playerTopLabel.setAlignment(Pos.CENTER);
+            AnchorPane.setRightAnchor(playerBottomButton, 30.0);
+            AnchorPane.setLeftAnchor(playerBottomLabel, 0.0);
+            playerBottomLabel.setAlignment(Pos.CENTER);
+        }
         stackPane.getChildren().clear();
-//        Button button2 = new Button("Accept");
-//        stackPane.getChildren().add(button2);
         
         checkerBoard = new CheckerBoardUI(checkerBoardStateSpace, boardWidth, boardHeight, lightColor, darkColor);
-        stackPane.getChildren().add(checkerBoard.build());
+        AnchorPane workingBoard = checkerBoard.build();
+        stackPane.getChildren().add(workingBoard);
         
         Node nodeOut = stackPane.getChildren().get(0);
         if(nodeOut instanceof AnchorPane){

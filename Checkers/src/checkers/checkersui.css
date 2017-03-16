@@ -5,12 +5,21 @@
 .mainFxmlClass {
 
 }
-    
-#stackPane{
-    /*-fx-background-color: #424242;*/
-    
+ 
+.playerBottomButton{
+    -fx-padding: 5;
+}
+.playerTopButton{
+    -fx-padding: 5;
+}
+.playerLabels{
+    -fx-font-size: 32;
+    -fx-text-fill: white;
+}
+.mainPane{
     -fx-background-image: url("paneBG.png");
-    -fx-background-repeat: repeat;   
+    -fx-background-repeat: repeat;
+    
 }
 
 .blackTile{

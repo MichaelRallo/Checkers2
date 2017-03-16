@@ -81,6 +81,25 @@ public class CheckerBoard {
         } 
     }
     
+    public boolean hasWinner(){
+        int winner1Flag = 1;
+        int winner2Flag = 1;
+        for(int row = 0; row < numRows; row++){
+            for(int col = 0; col < numCols; col++){
+                if(tiles[row + col*numRows].getContent() == PLAYER2CHECKER || tiles[row + col*numRows].getContent() == PLAYER2KING){
+                    winner1Flag = 0;
+                }
+                if(tiles[row + col*numRows].getContent() == PLAYER1CHECKER || tiles[row + col*numRows].getContent() == PLAYER1KING){
+                    winner2Flag = 0;
+                }
+            }
+        }
+            
+        
+       
+        return(winner1Flag == 1 || winner2Flag == 1);
+    }
+    
     public boolean isValidTileIndex(int tileIndex){
         return((tileIndex >= 0) && (tileIndex < maxIndex) && tiles[tileIndex].isValid());
     }

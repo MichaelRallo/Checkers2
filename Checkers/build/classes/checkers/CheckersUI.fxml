@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import java.util.*?>
@@ -7,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="vBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="checkers.CheckersUIController">
+<VBox fx:id="vBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="checkers.CheckersUIController">
    <stylesheets>
               <URL value="@checkersui.css" />
     </stylesheets>
@@ -30,6 +31,30 @@
           </Menu>
         </menus>
       </MenuBar>
-      <StackPane fx:id="stackPane" prefHeight="150.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+      <AnchorPane fx:id="playerTopPane" minHeight="47.0" prefHeight="47.0" prefWidth="800.0">
+         <children>
+            <Label fx:id="playerTopLabel" alignment="CENTER" contentDisplay="RIGHT" text="Player 2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button fx:id="playerTopButton" layoutY="5.0" maxHeight="32.0" maxWidth="100.0" minHeight="32.0" minWidth="100.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="100.0" style="-fx-padding: 5;" styleClass="playerTopButton" text="Offer Draw" AnchorPane.rightAnchor="30.0" />
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="5.0" />
+         </padding>
+      </AnchorPane>
+      <StackPane fx:id="stackPane" prefHeight="450.0" prefWidth="800.0" VBox.vgrow="ALWAYS" />
+      <AnchorPane fx:id="playerBottomPane" minHeight="47.0" prefHeight="47.0" prefWidth="800.0">
+         <children>
+            <Label fx:id="playerBottomLabel" alignment="CENTER" contentDisplay="RIGHT" text="Player 1" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button fx:id="playerBottomButton" layoutY="5.0" maxHeight="32.0" maxWidth="100.0" minHeight="32.0" minWidth="100.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="100.0" style="-fx-padding: 5;" styleClass="playerBottomButton" text="Offer Draw" AnchorPane.rightAnchor="30.0" />
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="5.0" />
+         </padding>
+      </AnchorPane>
    </children>
 </VBox>
