@@ -4,16 +4,19 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/checkersui.css</file>
+            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/State.java</file>
+            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/CheckerPiece.java</file>
+            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/CheckerBoardUI.java</file>
+            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/AIMan.java</file>
+            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/Checkers.java</file>
+            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/Tile.java</file>
             <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/CheckerBoardStateSpace.java</file>
             <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/TileContent.java</file>
             <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/CheckersUIController.java</file>
-            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/CheckerPiece.java</file>
-            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/CheckerBoardUI.java</file>
             <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/ActionsList.java</file>
-            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/Checkers.java</file>
-            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/Tile.java</file>
             <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/CheckerBoard.java</file>
             <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/JumpType.java</file>
+            <file>file:/C:/Users/Mike/Documents/NetBeansProjects/Checkers/Checkers/src/checkers/CheckersUI.fxml</file>
         </group>
     </open-files>
 </project-private>

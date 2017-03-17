@@ -5,6 +5,9 @@
  */
 package checkers;
 
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
+import javafx.animation.TranslateTransitionBuilder;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -16,6 +19,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import javafx.util.Duration;
 
 /**
  *
@@ -54,6 +58,33 @@ public class CheckerBoardUI {
         return null;
     }
     
+    public TranslateTransition animateMove(StackPane stackPane, CheckerBoardStateSpace checkerBoardStateSpace, int tileIndex){
+            return TranslateTransitionBuilder
+           .create()
+           .duration(new Duration(500))
+           .node(this.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
+           .toX(this.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+           .toY(this.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+           .autoReverse(false)
+           .cycleCount(1)
+           .interpolator(Interpolator.EASE_BOTH)
+           .build();
+    }
+    
+    public TranslateTransition animateJump(StackPane stackPane, CheckerBoardStateSpace checkerBoardStateSpace, int tileIndex){
+        return TranslateTransitionBuilder
+            .create()
+            .duration(new Duration(500))
+            .node(this.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
+            .toX(this.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+            .toY(this.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+            .autoReverse(false)
+            .cycleCount(1)
+            .interpolator(Interpolator.EASE_BOTH)
+            .build();
+    }
+    
+    
     public Rectangle getRectangleByIndex(StackPane stackPane, int index){
         Node nodeOut = stackPane.getChildren().get(0);
         if(nodeOut instanceof AnchorPane){
@@ -89,7 +120,7 @@ public class CheckerBoardUI {
        
        this.board = checkerBoardStateSpace.getBoard();
        this.numRows = board.getNumRows();
-       this.numCols = board.getNumcols();
+       this.numCols = board.getNumCols();
        this.boardWidth = boardWidth;
        this.boardHeight = boardHeight;
        this.possibles = checkerBoardStateSpace.getActiveActions();
@@ -118,10 +149,8 @@ public class CheckerBoardUI {
         }
 
         //Calculate the Padding Values
-        System.out.println("HB:" + horizontalPadding);
          verticalPadding = (boardHeight - (numRows*rectangleHeight))/2;
          horizontalPadding = (boardWidth - (numCols*rectangleWidth))/2;
-         System.out.println("HA:" + horizontalPadding);
         //Tiles
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++){
@@ -143,7 +172,7 @@ public class CheckerBoardUI {
                     }
                     for(int i = 0; i < possibles.getJumps().size(); i++)
                     {
-                        if(possibles.getJumps().get(i).getPath().get(possibles.getJumps().get(i).getPath().size()-2) == tileIndex){
+                        if(possibles.getJumps().get(i).getPath().get(1) == tileIndex){
                         rectangle.setStroke(Color.GOLD);
                         rectangle.setStrokeWidth(5);
                         rectangle.setStrokeType(StrokeType.INSIDE);

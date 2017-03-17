@@ -24,12 +24,19 @@ public class CheckerBoard {
     Tile[] tiles;
     
     public int getNumRows(){return this.numRows;}
-    public int getNumcols(){return this.numCols;}
+    public int getNumCols(){return this.numCols;}
     
     
     public Tile[] getTiles(){return this.tiles;}
     
-    
+    public CheckerBoard(CheckerBoard boardToCopy){
+        this(boardToCopy.getNumRows(), boardToCopy.getNumCols());
+        int rows = this.numRows;
+        int cols = this.numCols;
+        for(int i = 0; i < rows*cols; i++){
+            this.tiles[i] = new Tile(boardToCopy.getTiles()[i].getContent());
+        }
+    }
     public CheckerBoard(int rows, int cols){
         this.numRows = rows;
         this.numCols = cols;
@@ -46,8 +53,63 @@ public class CheckerBoard {
         }
     }
     
+
     public void setTile(int tileIndex, TileContent content){
         tiles[tileIndex].setContent(content);
+    }
+    
+    public int getScore(int player){
+        int player1Score = 0;
+        int player2Score = 0;
+        for(int row = 0; row < numRows; row++){
+            for(int col = 0; col < numCols; col++){
+                if(tiles[row + col*numRows].getContent() == PLAYER1CHECKER){
+                    player1Score += 1;
+                    player2Score -= 1;
+                }
+                if(tiles[row + col*numRows].getContent() == PLAYER1KING){
+                    player1Score += 3;
+                    player2Score -= 3;
+                }
+                if(tiles[row + col*numRows].getContent() == PLAYER2CHECKER){
+                    player2Score += 1;
+                    player1Score -= 1;
+                }
+                if(tiles[row + col*numRows].getContent() == PLAYER2KING){
+                    player2Score += 3;
+                    player1Score -= 3;
+                }
+            }
+        }
+        //System.out.println("Scores be: " + player1Score + ", " + player2Score);
+        if(player == 1){return player1Score;}
+        else{return player2Score;}
+            
+    }
+    
+    public int getScore2(int player){
+        int player1Score = 0;
+        int player2Score = 0;
+        for(int row = 0; row < numRows; row++){
+            for(int col = 0; col < numCols; col++){
+                if(tiles[row + col*numRows].getContent() == PLAYER1CHECKER){
+                    player1Score += 1;
+                }
+                if(tiles[row + col*numRows].getContent() == PLAYER1KING){
+                    player1Score += 3;
+                }
+                if(tiles[row + col*numRows].getContent() == PLAYER2CHECKER){
+                    player2Score += 1;
+                }
+                if(tiles[row + col*numRows].getContent() == PLAYER2KING){
+                    player2Score += 3;
+                }
+            }
+        }
+        System.out.println("Scores be: " + player1Score + ", " + player2Score);
+        if(player == 1){return player1Score;}
+        else{return player2Score;}
+            
     }
     
     public void populateDefault(){
@@ -184,31 +246,23 @@ public class CheckerBoard {
         if(checkerType == PLAYER1CHECKER || checkerType == PLAYER1KING || checkerType == PLAYER2KING){
             if(tryJumping(checkerIndex, upLeftIndex, upLeftJumpIndex, checkerType, previousJump)){
                //System.out.println("Found UpLeft! Upleft: "+upLeftIndex+", UpLeftJump: "+upLeftJumpIndex+", Previous: " + previousJump.getPath());
-               JumpType jump = new JumpType(upLeftIndex,upLeftJumpIndex);
-               jump.addToPath(previousJump.getPath());
-               jump.addToEnemiesDestroyed(previousJump.getEnemiesDestroyed());
+               JumpType jump = new JumpType(upLeftIndex,upLeftJumpIndex, previousJump);
                validJumps.add(jump);
             }
             if(tryJumping(checkerIndex, upRightIndex, upRightJumpIndex, checkerType, previousJump)){
                //System.out.println("Found UpRight!");
-               JumpType jump = new JumpType(upRightIndex,upRightJumpIndex);
-               jump.addToPath(previousJump.getPath());
-               jump.addToEnemiesDestroyed(previousJump.getEnemiesDestroyed());
+               JumpType jump = new JumpType(upRightIndex,upRightJumpIndex, previousJump);
                validJumps.add(jump);
             }
         }
         //Player 2 + Kings
         if(checkerType == PLAYER2CHECKER || checkerType == PLAYER1KING || checkerType == PLAYER2KING){
             if(tryJumping(checkerIndex, downLeftIndex, downLeftJumpIndex, checkerType, previousJump)){
-               JumpType jump = new JumpType(downLeftIndex,downLeftJumpIndex);
-               jump.addToPath(previousJump.getPath());
-               jump.addToEnemiesDestroyed(previousJump.getEnemiesDestroyed());
+               JumpType jump = new JumpType(downLeftIndex,downLeftJumpIndex, previousJump);
                validJumps.add(jump);
             }
             if(tryJumping(checkerIndex, downRightIndex, downRightJumpIndex, checkerType, previousJump)){
-               JumpType jump = new JumpType(downRightIndex,downRightJumpIndex);
-               jump.addToPath(previousJump.getPath());
-               jump.addToEnemiesDestroyed(previousJump.getEnemiesDestroyed());
+               JumpType jump = new JumpType(downRightIndex,downRightJumpIndex, previousJump);
                validJumps.add(jump);
             }
         }
@@ -220,8 +274,8 @@ public class CheckerBoard {
         for(int i = 0; i < validJumps.size(); i++){
             //System.out.println("Jump at: " + validJumps.get(i).getPath() + "");
             //If we jump and we can jump again, remove current jump and add future jumps!
-            if(!getValidJumps(validJumps.get(i).getPath().get(0), checkerType, validJumps.get(i)).isEmpty()){
-                finalValidJumps.addAll(getValidJumps(validJumps.get(i).getPath().get(0), checkerType, validJumps.get(i)));
+            if(!getValidJumps(validJumps.get(i).getPath().get(validJumps.get(i).getPath().size()-1), checkerType, validJumps.get(i)).isEmpty()){
+                finalValidJumps.addAll(getValidJumps(validJumps.get(i).getPath().get(validJumps.get(i).getPath().size()-1), checkerType, validJumps.get(i)));
             } 
             else{
                 finalValidJumps.add(validJumps.get(i));

@@ -28,6 +28,13 @@ public class JumpType {
         this();
         this.enemiesDestroyed.add(enemyIndex);
         this.path.add(pathIndex);
+    } 
+    public JumpType(int enemyIndex, int pathIndex, JumpType previousJump){
+        this();
+        this.enemiesDestroyed.addAll(previousJump.getEnemiesDestroyed());
+        this.path.addAll(previousJump.getPath());
+        this.enemiesDestroyed.add(enemyIndex);
+        this.path.add(pathIndex);
     }
     
     public void addToPath(int index){

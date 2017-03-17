@@ -27,6 +27,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -97,7 +98,18 @@ public class CheckersUIController implements Initializable {
 //        checkerBoardStateSpace.getBoard().placeChecker(21, TileContent.PLAYER2CHECKER);
 //        checkerBoardStateSpace.getBoard().placeChecker(37, TileContent.PLAYER2KING);
 //        checkerBoardStateSpace.getBoard().placeChecker(35, TileContent.PLAYER2CHECKER);
-checkerBoardStateSpace.getBoard().populateDefault();
+
+
+
+//            checkerBoardStateSpace.getBoard().populateDefault();
+
+            checkerBoardStateSpace.getBoard().placeChecker(26, TileContent.PLAYER1KING);
+            checkerBoardStateSpace.getBoard().placeChecker(17, TileContent.PLAYER2KING);
+            checkerBoardStateSpace.getBoard().placeChecker(19, TileContent.PLAYER2KING);
+            checkerBoardStateSpace.getBoard().placeChecker(21, TileContent.PLAYER2KING);
+            checkerBoardStateSpace.getBoard().placeChecker(37, TileContent.PLAYER2KING);
+            checkerBoardStateSpace.getBoard().placeChecker(56, TileContent.PLAYER2KING);
+            
                 
     }   
     
@@ -116,6 +128,10 @@ checkerBoardStateSpace.getBoard().populateDefault();
         
         scene.widthProperty().addListener(listener);
         scene.heightProperty().addListener(listener);
+        
+        checkerBoardStateSpace.setAIPlayer(1);
+       
+        
         renderBoard();
     }
     
@@ -143,8 +159,7 @@ checkerBoardStateSpace.getBoard().populateDefault();
                     renderBoard();
                     return;
                 }
-                checkerBoardStateSpace.setActiveActions(checkerBoardStateSpace.getBoard().getValidMoves(tileIndex), 
-                    checkerBoardStateSpace.getBoard().getValidJumps(tileIndex, checkerBoardStateSpace.getBoard().getTiles()[tileIndex].getContent(),  new JumpType(tileIndex)));
+                checkerBoardStateSpace.setActiveActions(tileIndex);
                 checkerBoardStateSpace.setActiveChecker(tileIndex);
                 checkerBoardStateSpace.setState(CHECKERACTIVE);
                 renderBoard();
@@ -157,7 +172,7 @@ checkerBoardStateSpace.getBoard().populateDefault();
 
             @Override
             public void handle(MouseEvent t) {
-                System.out.println("Tile Clicked...");
+
                 int tileIndex = checkerBoard.getRectangleIndex((Rectangle)t.getSource());
                 if(checkerBoardStateSpace.getState() == CHECKERACTIVE || checkerBoardStateSpace.getState() == JUMPING){
                     
@@ -167,62 +182,50 @@ checkerBoardStateSpace.getBoard().populateDefault();
                             if(checkerBoardStateSpace.getActiveActions().getMoves().get(i) == tileIndex){
 
                                 checkerBoardStateSpace.getBoard().doMove(checkerBoardStateSpace.getActiveChecker(), tileIndex);
-
-                                
-
-                                System.out.println("Animating...");
-                                TranslateTransition translate;
-                                translate = TranslateTransitionBuilder
-                               .create()
-                               .duration(new Duration(500))
-                               .node(checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
-                               .toX(checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
-                               .toY(checkerBoard.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
-                               .autoReverse(false)
-                               .cycleCount(1)
-                               .interpolator(Interpolator.EASE_BOTH)
-                               .build();
-                               translate.setOnFinished((final ActionEvent arg0) -> {
+                                TranslateTransition translate = checkerBoard.animateMove(stackPane, checkerBoardStateSpace, tileIndex);
+                                translate.setOnFinished((final ActionEvent arg0) -> {
                                     checkerBoardStateSpace.setState(IDLE);
                                     checkerBoardStateSpace.clearActiveActions();
-                                   checkerBoardStateSpace.togglePlayerTurn();
+                                    checkerBoardStateSpace.togglePlayerTurn();
                                     renderBoard();
+                                    if(checkerBoardStateSpace.aiEnabled && checkerBoardStateSpace.getPlayerTurn() == checkerBoardStateSpace.getAIPlayer()){
+                                        AIMan ai = new AIMan();
+                                        int iindex = ai.processBoard(checkerBoardStateSpace);
+//                                    
+//                                        Circle aiCircle = checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker());
+//                                        aiCircle.fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0,
+//                                            MouseButton.PRIMARY, 1, false, false, false, false, true, false, false,
+//                                            false, false, false, null));
+                                    }
                                 });
                                 translate.play();
                                 return;
                             }
                         }
                     }
-                    System.out.println("BOOM");
 
                     for(int i = 0; i < checkerBoardStateSpace.getActiveActions().getJumps().size(); i++)
                     {
-                        if(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().get(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().size()-2) == tileIndex){
-                           checkerBoardStateSpace.getActiveActions().getJumps().remove(i);
+                        System.out.println("GLLL: " + checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath());
+                        //The reason we minus 2 is because the lists are built in reverse.
+                        //The beginning point is at the end of the list and the tile it's jumping to is before it and so on.
+                        //This is why we -2.
+                        if(checkerBoardStateSpace.getActiveActions().getJumps().get(i).getPath().get(1) == tileIndex){
+                            checkerBoardStateSpace.getActiveActions().getJumps().remove(0);
                             checkerBoardStateSpace.getBoard().doJump(checkerBoardStateSpace.getActiveChecker(), tileIndex);
-                            System.out.println("Animating...");
                             
                             checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()).toFront();
-                            TranslateTransition translate;
-                            translate = TranslateTransitionBuilder
-                           .create()
-                           .duration(new Duration(500))
-                           .node(checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
-                           .toX(checkerBoard.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
-                           .toY(checkerBoard.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
-                           .autoReverse(false)
-                           .cycleCount(1)
-                           .interpolator(Interpolator.EASE_BOTH)
-                           .build();
-                           translate.setOnFinished((final ActionEvent arg0) -> {
+                            TranslateTransition translate = checkerBoard.animateJump(stackPane, checkerBoardStateSpace, tileIndex);
+                            translate.setOnFinished((final ActionEvent arg0) -> {
                                checkerBoardStateSpace.setState(JUMPING);
-                               checkerBoardStateSpace.setActiveActions(new ArrayList<>(), 
-                                    checkerBoardStateSpace.getBoard().getValidJumps(tileIndex, checkerBoardStateSpace.getBoard().getTiles()[tileIndex].getContent(),  new JumpType(tileIndex)));
+                               checkerBoardStateSpace.setActiveActions(tileIndex);
+                               checkerBoardStateSpace.clearActiveMoves();
                                checkerBoardStateSpace.setActiveChecker(tileIndex);
                                if(checkerBoardStateSpace.getActiveActions().getJumps().isEmpty()){
                                    checkerBoardStateSpace.clearActiveActions();
                                    checkerBoardStateSpace.setState(IDLE);
                                    checkerBoardStateSpace.togglePlayerTurn();
+                                   
                                }
                                renderBoard();
                             });
@@ -294,6 +297,20 @@ checkerBoardStateSpace.getBoard().populateDefault();
                 }
             }
         } 
+       
+        
+        //http://book2s.com/java/api/javafx/scene/input/mouseevent/mouseevent-18.html
+//        if(checkerBoardStateSpace.getPlayerTurn() == checkerBoardStateSpace.getAIPlayer()){
+//            checkerBoardStateSpace.setState(THINKING);
+//            AIMan aiMan = new AIMan();
+//            aiMan.processBoard(checkerBoardStateSpace);
+//            Circle aiCircle = checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker());
+//            
+//        }
+//        Circle aiCircle = checkerBoard.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker());
+//        aiCircle.fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0,
+//            MouseButton.PRIMARY, 1, false, false, false, false, true, false, false,
+//            false, false, false, null));
     }
     
     @FXML
