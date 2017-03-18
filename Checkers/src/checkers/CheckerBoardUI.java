@@ -58,26 +58,26 @@ public class CheckerBoardUI {
         return null;
     }
     
-    public TranslateTransition animateMove(StackPane stackPane, CheckerBoardStateSpace checkerBoardStateSpace, int tileIndex){
+    public TranslateTransition animateMove(StackPane stackPane, int startingIndex, int endingIndex){
             return TranslateTransitionBuilder
            .create()
            .duration(new Duration(500))
-           .node(this.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
-           .toX(this.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
-           .toY(this.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+           .node(this.getCheckerCircleByIndex(stackPane, startingIndex))
+           .toX(this.getTransX(stackPane, startingIndex, endingIndex))
+           .toY(this.getTransY(stackPane, startingIndex, endingIndex))
            .autoReverse(false)
            .cycleCount(1)
            .interpolator(Interpolator.EASE_BOTH)
            .build();
     }
     
-    public TranslateTransition animateJump(StackPane stackPane, CheckerBoardStateSpace checkerBoardStateSpace, int tileIndex){
+    public TranslateTransition animateJump(StackPane stackPane, int startingIndex, int endingIndex){
         return TranslateTransitionBuilder
             .create()
-            .duration(new Duration(500))
-            .node(this.getCheckerCircleByIndex(stackPane, checkerBoardStateSpace.getActiveChecker()))
-            .toX(this.getTransX(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
-            .toY(this.getTransY(stackPane, checkerBoardStateSpace.getActiveChecker(), tileIndex))
+            .duration(new Duration(750))
+            .node(this.getCheckerCircleByIndex(stackPane, startingIndex))
+            .toX(this.getTransX(stackPane, startingIndex, endingIndex))
+            .toY(this.getTransY(stackPane, startingIndex, endingIndex))
             .autoReverse(false)
             .cycleCount(1)
             .interpolator(Interpolator.EASE_BOTH)

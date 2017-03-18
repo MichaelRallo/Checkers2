@@ -10,6 +10,7 @@ import static checkers.TileContent.PLAYER1KING;
 import static checkers.TileContent.PLAYER2CHECKER;
 import static checkers.TileContent.PLAYER2KING;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class AIMan {
     
     public int playerID;
-    public int processBoard(CheckerBoardStateSpace checkerBoardStateSpace){
+    public CheckerBoardStateSpace processBoard(CheckerBoardStateSpace checkerBoardStateSpace){
         
         this.playerID = checkerBoardStateSpace.getAIPlayer();
         int numRows = checkerBoardStateSpace.getBoard().getNumRows();
@@ -32,9 +33,9 @@ public class AIMan {
         }
         
         System.out.println("Max Tile is: " + getMaxChild(checkerBoardStateSpace.getChildren(), playerID).getActiveChecker());
+         System.out.println("Max Path is: " + getMaxChild(checkerBoardStateSpace.getChildren(), playerID));
         
-        
-        return getMaxChild(checkerBoardStateSpace.getChildren(), playerID).getActiveChecker();
+        return getMaxChild(checkerBoardStateSpace.getChildren(), playerID);
     }
     
     public CheckerBoardStateSpace getMaxChild(ArrayList<CheckerBoardStateSpace> children, int player){
@@ -43,6 +44,13 @@ public class AIMan {
         for(int i = 0; i < children.size(); i++){
             if(max.getBoard().getScore(player) < children.get(i).getBoard().getScore(player)){
                 max = children.get(i);
+            } if(max.getBoard().getScore(player) == children.get(i).getBoard().getScore(player)){
+                
+                Random rand = new Random();
+                int  n = rand.nextInt(40);
+                if(n%2 == 0){
+                    max = children.get(i);
+                }
             }
         }
         return max;

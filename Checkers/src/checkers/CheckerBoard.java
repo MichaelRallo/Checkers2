@@ -361,4 +361,13 @@ public class CheckerBoard {
         System.out.print("\n");
         
     }
+    
+    public void removeChecker(int index){
+        tiles[index].setContent(EMPTY);
+    }
+    public void removeCheckers(ArrayList<Integer> indexes){
+        indexes.stream().forEach((i) -> {
+            this.tiles[i].setContent(EMPTY);
+        });
+    }
 }

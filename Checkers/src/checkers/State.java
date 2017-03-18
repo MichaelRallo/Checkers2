@@ -10,5 +10,5 @@ package checkers;
  * @author Mike
  */
 public enum State {
-    CHECKERACTIVE, IDLE, THINKING, JUMPING
+    CHECKERACTIVE, IDLE, THINKING, JUMPING, MOVING
 }
