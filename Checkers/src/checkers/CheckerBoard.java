@@ -8,7 +8,6 @@ package checkers;
 import static checkers.TileContent.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -16,34 +15,29 @@ import java.util.concurrent.TimeUnit;
  */
 public class CheckerBoard {
     
+    Tile[] tiles;
     private int numRows;
     private int numCols;
     private final int maxIndex;
-    public void setNumRows(int rows){this.numRows = rows;}   
-    public void setNumCols(int cols){this.numCols = cols;} 
-    Tile[] tiles;
     
+    //Rows and Cols
     public int getNumRows(){return this.numRows;}
-    public int getNumCols(){return this.numCols;}
+    public void setNumRows(int rows){this.numRows = rows;} 
+    public int getNumCols(){return this.numCols;}  
+    public void setNumCols(int cols){this.numCols = cols;} 
     
-    
+    //Tiles for Rows and Cols
     public Tile[] getTiles(){return this.tiles;}
     
-    public CheckerBoard(CheckerBoard boardToCopy){
-        this(boardToCopy.getNumRows(), boardToCopy.getNumCols());
-        int rows = this.numRows;
-        int cols = this.numCols;
-        for(int i = 0; i < rows*cols; i++){
-            this.tiles[i] = new Tile(boardToCopy.getTiles()[i].getContent());
-        }
-    }
+    
+    //Constructors
     public CheckerBoard(int rows, int cols){
         this.numRows = rows;
         this.numCols = cols;
         this.maxIndex = rows*cols;
         tiles = new Tile[maxIndex];
         
-        for(int i = 0; i < rows*cols; i++){
+        for(int i = 0; i < maxIndex; i++){
             if(((i/rows)%2 == 0 && i%2 == 0) || (i/rows)%2 == 1 && i%2 == 1){
                 tiles[i] = new Tile(NOTVALID);
             }
@@ -52,12 +46,20 @@ public class CheckerBoard {
             }
         }
     }
+    //Copies board
+    public CheckerBoard(CheckerBoard boardToCopy){
+        this(boardToCopy.getNumRows(), boardToCopy.getNumCols());
+        for(int i = 0; i < this.maxIndex; i++){
+            this.tiles[i] = new Tile(boardToCopy.getTiles()[i].getContent());
+        }
+    }
     
-
+    //Fills in a Tile's Content
     public void setTile(int tileIndex, TileContent content){
         tiles[tileIndex].setContent(content);
     }
     
+    //Caulculate Scores for players
     public int getScore(int player){
         int player1Score = 0;
         int player2Score = 0;
@@ -81,100 +83,76 @@ public class CheckerBoard {
                 }
             }
         }
-        //System.out.println("Scores be: " + player1Score + ", " + player2Score);
+        //System.out.println("Score for Player1: " + player1Score + ", Player2:" + player2Score);
         if(player == 1){return player1Score;}
         else{return player2Score;}
             
     }
     
-    public int getScore2(int player){
-        int player1Score = 0;
-        int player2Score = 0;
-        for(int row = 0; row < numRows; row++){
-            for(int col = 0; col < numCols; col++){
-                if(tiles[row + col*numRows].getContent() == PLAYER1CHECKER){
-                    player1Score += 1;
-                }
-                if(tiles[row + col*numRows].getContent() == PLAYER1KING){
-                    player1Score += 3;
-                }
-                if(tiles[row + col*numRows].getContent() == PLAYER2CHECKER){
-                    player2Score += 1;
-                }
-                if(tiles[row + col*numRows].getContent() == PLAYER2KING){
-                    player2Score += 3;
-                }
-            }
-        }
-        System.out.println("Scores be: " + player1Score + ", " + player2Score);
-        if(player == 1){return player1Score;}
-        else{return player2Score;}
-            
-    }
-    
+    //Builds the Default Board
     public void populateDefault(){
         
-        
-        for(int i = 0; i < tiles.length; i++){
+        for(int i = 0; i < maxIndex; i++){
             
-            //Player 1 - Bottom of Board
-            if((i < numCols*(numRows-1) && i >= numCols*(numRows-2))){
-                if(i%2 == 1){
-                    tiles[i].setContent(PLAYER1CHECKER);
+            //Player 2, Top of Board - Top Three Rows
+            if(i < numRows*3){
+                //If Even Row, Populate Odd Squares
+                if((i/numRows)%2 == 0 && i%2 == 1){
+                    tiles[i].setContent(PLAYER2CHECKER);
                 }
-            }
-            if((i < numCols*(numRows) && i >= numCols*(numRows-1)) || (i < numCols*(numRows-2) && i >= numCols*(numRows-3))){
-                if(i%2 == 0){
-                    tiles[i].setContent(PLAYER1CHECKER);
-                }
-            }
-            
-            //Player 2, Top of Board
-            if(i >= 0 && i < numCols || (i >= numCols*2 && i < numCols*3)){
-                if(i%2 == 1){
+                //If Odd Row, Populate Even Squares
+                if((i/numRows)%2 == 1 && i%2 == 0){
                     tiles[i].setContent(PLAYER2CHECKER);
                 }
             }
-            if(i >= numCols && i < numCols*2){
-                if(i%2 == 0){
-                    tiles[i].setContent(PLAYER2CHECKER);
+            
+            //Player 1, Bottom of Board - Bottom Three Rows
+            if(i >= maxIndex-numRows*3){
+                //If Even Row, Populate Odd Squares
+                if((i/numRows)%2 == 0 && i%2 == 1){
+                    tiles[i].setContent(PLAYER1CHECKER);
+                }
+                //If Odd Row, Populate Even Squares
+                if((i/numRows)%2 == 1 && i%2 == 0){
+                    tiles[i].setContent(PLAYER1CHECKER);
                 }
             }
         } 
     }
     
+    //Determine if the Board has a winner
     public boolean hasWinner(){
         int winner1Flag = 1;
         int winner2Flag = 1;
-        for(int row = 0; row < numRows; row++){
-            for(int col = 0; col < numCols; col++){
-                if(tiles[row + col*numRows].getContent() == PLAYER2CHECKER || tiles[row + col*numRows].getContent() == PLAYER2KING){
-                    winner1Flag = 0;
-                }
-                if(tiles[row + col*numRows].getContent() == PLAYER1CHECKER || tiles[row + col*numRows].getContent() == PLAYER1KING){
-                    winner2Flag = 0;
-                }
+        for(int i = 0; i < maxIndex; i++){
+            if(this.matchesPlayer(2, i)){
+                winner1Flag = 0;
             }
+            if(this.matchesPlayer(1, i)){
+                winner2Flag = 0;
+            }     
         }
-            
-        
-       
         return(winner1Flag == 1 || winner2Flag == 1);
     }
     
+    //Check if Tile is a Valid Index
     public boolean isValidTileIndex(int tileIndex){
         return((tileIndex >= 0) && (tileIndex < maxIndex) && tiles[tileIndex].isValid());
     }
     
+    //Check if Move is Valid
     public boolean tryMoving(int tileIndex){
         return (this.isValidTileIndex(tileIndex) && tiles[tileIndex].isOpen());
     }
     
-    public boolean tryJumping(int tileIndex, int jumpingOverIndex, int landingIndex, TileContent checkerType, JumpType jump){
-        return(this.isValidTileIndex(tileIndex) && this.isValidTileIndex(jumpingOverIndex) && this.isValidTileIndex(landingIndex) 
+    //Check if Jump is Valid
+    public boolean tryJumping(int startingIndex, int jumpingOverIndex, int landingIndex, TileContent checkerType, JumpType jump){
+        return(this.isValidTileIndex(startingIndex) && this.isValidTileIndex(jumpingOverIndex) && this.isValidTileIndex(landingIndex) 
                 && (tiles[jumpingOverIndex].isEnemy(checkerType) && !jump.getEnemiesDestroyed().contains(jumpingOverIndex))
                 && (tiles[landingIndex].isOpen() || jump.getPath().contains(landingIndex)));    
     }
+    
+    //Checks and Sets checkers that have made if to other side of the board to Kings
     private void checkKings(int index){
         if(index/numRows == 0 || index/numRows == numRows-1){
             if(tiles[index].getContent() == PLAYER1CHECKER){
@@ -185,11 +163,15 @@ public class CheckerBoard {
             }
         }
     }
+    
+    //Compute Move on Board
     public void doMove(int checkerBefore, int checkerAfter){
         tiles[checkerAfter].setContent(tiles[checkerBefore].getContent());
         tiles[checkerBefore].setContent(EMPTY);
         checkKings(checkerAfter);
     }
+    
+    //Compute Jump on Board
     public void doJump(int checkerBefore, int checkerAfter){
         int checkerBetween;
         if(checkerBefore < checkerAfter){
@@ -200,34 +182,17 @@ public class CheckerBoard {
             if(checkerBefore-(2*numCols) < checkerAfter){checkerBetween = checkerBefore-numCols+1;}
             else{checkerBetween = checkerBefore-numCols-1;}
         }
-        
-        
+
         tiles[checkerAfter].setContent(tiles[checkerBefore].getContent());
         tiles[checkerBetween].setContent(EMPTY);
         tiles[checkerBefore].setContent(EMPTY);
         checkKings(checkerAfter);
     }
         
-    public ActionsList selectChecker(int checkerIndex){
-        ArrayList<Integer> validMoves = this.getValidMoves(checkerIndex);
-        ArrayList<JumpType> validJumps = this.getValidJumps(checkerIndex, tiles[checkerIndex].getContent(), new JumpType(checkerIndex));
-        
-        System.out.print("Tiles you may move to: ");
-        for(int i = 0; i < validMoves.size(); i++){
-            System.out.print(validMoves.get(i) + " ");
-        }
-        for(int i = 0; i < validJumps.size(); i++){
-            Collections.reverse(validJumps.get(i).getPath());
-            System.out.print(validJumps.get(i).getPath().get(validJumps.get(i).getPath().size()-2) + " ");
-        }
-        System.out.print("\n");
-        
-        return new ActionsList(validMoves, validJumps);
-    }
-    
-    
+
+    //Returns of list of jumps a checker can make
     public ArrayList<JumpType> getValidJumps(int checkerIndex, TileContent checkerType, JumpType previousJump){
-        //System.out.println("Checking Jumps for: " + checkerIndex + " of type: " + checkerType);
+
         ArrayList<JumpType> validJumps = new ArrayList<>();
         if(!this.isValidTileIndex(checkerIndex)){return validJumps;}
         
@@ -245,12 +210,10 @@ public class CheckerBoard {
         //Player 1 + Kings
         if(checkerType == PLAYER1CHECKER || checkerType == PLAYER1KING || checkerType == PLAYER2KING){
             if(tryJumping(checkerIndex, upLeftIndex, upLeftJumpIndex, checkerType, previousJump)){
-               //System.out.println("Found UpLeft! Upleft: "+upLeftIndex+", UpLeftJump: "+upLeftJumpIndex+", Previous: " + previousJump.getPath());
                JumpType jump = new JumpType(upLeftIndex,upLeftJumpIndex, previousJump);
                validJumps.add(jump);
             }
             if(tryJumping(checkerIndex, upRightIndex, upRightJumpIndex, checkerType, previousJump)){
-               //System.out.println("Found UpRight!");
                JumpType jump = new JumpType(upRightIndex,upRightJumpIndex, previousJump);
                validJumps.add(jump);
             }
@@ -269,7 +232,6 @@ public class CheckerBoard {
 
         
         ArrayList<JumpType> finalValidJumps = new ArrayList<>();
-        //System.out.println("Possibilies: " + validJumps.size());
         //Once Jumped, we need to see if we can make any other jumps!
         for(int i = 0; i < validJumps.size(); i++){
             //System.out.println("Jump at: " + validJumps.get(i).getPath() + "");
@@ -323,7 +285,17 @@ public class CheckerBoard {
         tiles[checkerIndex].setContent(checkerType);
     }
     
-    
+    public boolean matchesPlayer(int playerID, int index){
+        if(playerID == 1 && (tiles[index].getContent() == PLAYER1CHECKER || tiles[index].getContent() == PLAYER1KING)){
+            return true;
+        }
+        else if(playerID == 2 && (tiles[index].getContent() == PLAYER2CHECKER || tiles[index].getContent() == PLAYER2KING)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
     
     public void printBoard(){

@@ -164,21 +164,19 @@ public class CheckerBoardUI {
                 }
                 
                 int tileIndex = col+(row*numCols);
-                if(possibles !=null && possibles.getMoves() !=null && possibles.getJumps() != null){
-                    if(possibles.getMoves().contains(tileIndex)){
+                if(possibles.getMoves().contains(tileIndex)){
+                    rectangle.setStroke(Color.GOLD);
+                    rectangle.setStrokeWidth(5);
+                    rectangle.setStrokeType(StrokeType.INSIDE);
+                }
+                for(int i = 0; i < possibles.getJumps().size(); i++){
+                    if(possibles.getJumps().get(i).getPath().get(1) == tileIndex){
                         rectangle.setStroke(Color.GOLD);
                         rectangle.setStrokeWidth(5);
                         rectangle.setStrokeType(StrokeType.INSIDE);
-                    }
-                    for(int i = 0; i < possibles.getJumps().size(); i++)
-                    {
-                        if(possibles.getJumps().get(i).getPath().get(1) == tileIndex){
-                        rectangle.setStroke(Color.GOLD);
-                        rectangle.setStrokeWidth(5);
-                        rectangle.setStrokeType(StrokeType.INSIDE);
-                        }
                     }
                 }
+                
                 //rectangle.setFill(color);
                 anchorPane.getChildren().add(rectangle);
 

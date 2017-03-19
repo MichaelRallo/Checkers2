@@ -22,38 +22,35 @@ public class AIMan {
     public CheckerBoardStateSpace processBoard(CheckerBoardStateSpace checkerBoardStateSpace){
         
         this.playerID = checkerBoardStateSpace.getAIPlayer();
-        int numRows = checkerBoardStateSpace.getBoard().getNumRows();
-        int numCols = checkerBoardStateSpace.getBoard().getNumCols();
-        Tile[] tiles = checkerBoardStateSpace.getBoard().getTiles();
         
-        System.out.println("Children's Scores: ");
+        //System.out.println("Children's Scores: ");
         checkerBoardStateSpace.generateChildren(playerID);
         for(CheckerBoardStateSpace child : checkerBoardStateSpace.getChildren()){
-            System.out.println("Child: " + child + " Score: " + child.getBoard().getScore(playerID));
+            //System.out.println("Child: " + child + " Score: " + child.getBoard().getScore(playerID));
         }
-        
-        System.out.println("Max Tile is: " + getMaxChild(checkerBoardStateSpace.getChildren(), playerID).getActiveChecker());
-         System.out.println("Max Path is: " + getMaxChild(checkerBoardStateSpace.getChildren(), playerID));
-        
+    
         return getMaxChild(checkerBoardStateSpace.getChildren(), playerID);
     }
     
+    
+    //Get the Max Child
     public CheckerBoardStateSpace getMaxChild(ArrayList<CheckerBoardStateSpace> children, int player){
         if(children.isEmpty()){return null;}
-        CheckerBoardStateSpace max = children.get(0);
+        ArrayList<CheckerBoardStateSpace> maxList = new ArrayList<>();
+        maxList.add(children.get(0));
         for(int i = 0; i < children.size(); i++){
-            if(max.getBoard().getScore(player) < children.get(i).getBoard().getScore(player)){
-                max = children.get(i);
-            } if(max.getBoard().getScore(player) == children.get(i).getBoard().getScore(player)){
-                
-                Random rand = new Random();
-                int  n = rand.nextInt(40);
-                if(n%2 == 0){
-                    max = children.get(i);
-                }
+            
+            if(maxList.get(0).getBoard().getScore(player) < children.get(i).getBoard().getScore(player)){
+                maxList.clear();
+                maxList.add(children.get(i));
+            } 
+            if(maxList.get(0).getBoard().getScore(player) == children.get(i).getBoard().getScore(player)){
+                maxList.add(children.get(i));
             }
         }
-        return max;
+        
+        Random rand = new Random();
+        return maxList.get(rand.nextInt(maxList.size()-1));
         
     }
 }
